@@ -1,93 +1,175 @@
-'use strict';
+var playing = false;
+var score;
+var correctAnswer;
+var myAudio = new Audio("audio.wav");
+var MyAudio2=new Audio("myaudio2.wav");
 
-const score0El = document.getElementById('score--0');
-const score1El = document.getElementById('score--1');
-const current0El = document.getElementById('current--0');
-const current1El = document.getElementById('current--1');
-const diceEl = document.querySelector('.dice');
-const btnRoll = document.querySelector('.btn--roll');
-const btnNew = document.querySelector('.btn--new');
-const btnHold = document.querySelector('.xyz');
-let player0El = document.querySelector('.player--0');
-let player1El = document.querySelector('.player--1');
-
-score0El.textContent = 0;
-score1El.textContent = 0;
-diceEl.classList.add('hidden');
-const score = [0, 0];
-let currentScore = 0;
-let activePlayer = 0;
-let playing = true;
-let holdScore = 0;
-
-const changePlayer = function () {
-  // player0El.classList.toggle('.player--active');
-  // player1El.classList.toggle('.player--active');
-  document.getElementById(`current--${activePlayer}`).textContent = 0;
-  // document.querySelector('.player').style.background = '';
-  activePlayer = activePlayer === 0 ? 1 : 0;
-  currentScore = 0;
-};
-// Rolling The Dice Functionality
-
-btnRoll.addEventListener('click', function () {
-  if (playing) {
-    const dice = Math.trunc(Math.random() * 6) + 1;
-    //Displaying The Dice
-    diceEl.classList.remove('hidden');
-    diceEl.src = `dice-${dice}.png`;
-
-    //Checking Weather dice is 1 or else
-    if (dice !== 1) {
-      //Add dice to current score
-
-      currentScore = currentScore + dice;
-      document.querySelector(
-        `#current--${activePlayer}`
-      ).textContent = currentScore;
+document.getElementById("startreset").onclick = () => {
+    if (playing == true) {
+        location.reload(true);
     } else {
-      changePlayer();
+        playing = true
+        score = 0;
+        remainingTime();
+        show("timeremaining");
+        hide("gameOver");
+        text("startreset", "Reset Game");
+        generateQA();
     }
-  }
-});
-
-btnHold.addEventListener('click', function () {
-  if (playing) {
-    //Adding Current Score
-    score[activePlayer] += currentScore;
-    document.getElementById(`score--${activePlayer}`).textContent =
-      score[activePlayer];
-
-    if (score[activePlayer] >= 7) {
-      playing = false;
-      document
-        .querySelector(`.player--${activePlayer}`)
-        .classList.add('player--winner');
-      document
-        .querySelector(`.player--${activePlayer}`)
-        .classList.remove('player--active');
-      diceEl.classList.add('hidden');
+}
+document.getElementById("box1").onclick = () => {
+    if (playing == true) {
+        if (document.getElementById("box1").innerHTML == correctAnswer) {
+            myAudio.currentTime = 0;
+            myAudio.play();
+            score++;
+            document.getElementById("scorevalue").innerHTML = score;
+            hide("wrong");
+            show("correct");
+            hide("correct"); 
+            generateQA();
+        }else{
+            MyAudio2.currentTime=0;
+            MyAudio2.play();
+            hide("correct");
+            show("wrong");
+            hide("wrong");
+        }
     }
-    //Changing Player after Hold
-    else {
-      changePlayer();
+}
+document.getElementById("box2").onclick = () => {
+    if (playing == true) {
+        if (document.getElementById("box2").innerHTML == correctAnswer) {
+            myAudio.currentTime = 0;
+            myAudio.play();
+            score++;
+            document.getElementById("scorevalue").innerHTML = score;
+            hide("wrong");
+            show("correct");
+            hide("correct");
+            generateQA();
+        }else{
+            MyAudio2.currentTime=0;
+            MyAudio2.play();
+            hide("correct");
+            show("wrong");
+            hide("wrong");
+        }
     }
-  }
-});
-btnNew.addEventListener('click', function () {
-  document
-    .querySelector(`.player--${activePlayer}`)
-    .classList.remove('player--winner');
-  document.querySelector(`.player--0`).classList.add('player--active');
+}
+document.getElementById("box3").onclick = () => {
+    if (playing == true) {
+        if (document.getElementById("box3").innerHTML == correctAnswer) {
+            myAudio.currentTime = 0;
+            myAudio.play();
+            score++;
+            document.getElementById("scorevalue").innerHTML = score;
+            hide("wrong");
+            show("correct");
+            hide("correct");
+            generateQA();
+        }else{
+            MyAudio2.currentTime=0;
+            MyAudio2.play();
+            hide("correct");
+            show("wrong");
+            hide("wrong");
+          
+        }
+    }
+}
+document.getElementById("box4").onclick = () => {
+    if (playing == true) {
+        if (document.getElementById("box4").innerHTML == correctAnswer) {
+            myAudio.currentTime = 0;
+            myAudio.play();
+            score++;
+            document.getElementById("scorevalue").innerHTML = score;
+            hide("wrong");
+            show("correct");
+            hide("correct");
+            generateQA();
+        }else{
+            MyAudio2.currentTime=0;
+            MyAudio2.play();
+            hide("correct");
+            show("wrong");
+            hide("wrong");
+        }
+    }
+}
+var remainingTime = () => {
+    var time = 60;
+    setInterval(() => {
+        time--;
+        if (time >= 0) {
+            // ACTIVE TIME
+            document.getElementById("timeremainingvalue").innerHTML = " " + time + " ";
+        } else {
+            // expired time
+            clearInterval(this);
+            document.getElementById("gameOver").innerHTML = "<p>Game Over</p><p>Your score is: " + score + "</p>";
+            show("gameOver");
+            hide("timeremaining");
+            hide("choices");
+            hide("score");
+        }
+    }, 1000);
+}
+var generateQA = () => {
+    var ops=["X","+","-"];
+    var x = Math.floor(Math.random() * 9) + 1;
+    var y = Math.floor(Math.random() * 9) + 1;
+    var op= Math.floor(Math.random() * 3);
+    if(op==0)
+    {
+        correctAnswer = x * y;
+    }
+    else if(op==1)
+    {
+        correctAnswer = x + y;
+    }
+    else{
+        correctAnswer = x - y;
+    }
+    var correctPosition = 1 + (Math.round(3 * Math.random()));
+    var answers = [correctAnswer];
+    document.getElementById("question").innerHTML = "<p>" + x + ops[op] + y + "</p>";
+    for (let i = 1; i <= 4; i++) {
+            do {
+                var wrongAnswer;
+                if(op==0)
+                {
+                 wrongAnswer= (Math.floor(Math.random() * 9) + 1) * (Math.floor(Math.random() * 9) + 1);
+                }
+                else if(op==1)
+                {
+                    wrongAnswer= (Math.floor(Math.random() * 9) + 1) + (Math.floor(Math.random() * 9) + 1);
+                }
+                else{
+                    wrongAnswer= (Math.floor(Math.random() * 9) + 1) - (Math.floor(Math.random() * 9) + 1);
+                }
+                document.getElementById("box" + i).innerHTML = wrongAnswer;
+               // answers.push(wrongAnswer);
+            } while (answers.indexOf(wrongAnswer) > -1);
+        answers.push(wrongAnswer);
+    }
+    document.getElementById("box"+correctPosition).innerHTML = correctAnswer;
+}
+var show = (id) => {
+    document.getElementById(id).style.display = "block";
+}
 
-  current0El.textContent = 0;
-  current1El.textContent = 0;
-  score0El.textContent = 0;
-  score1El.textContent = 0;
-  diceEl.classList.add('hidden');
-  score = [0, 0];
-  currentScore = 0;
-  activePlayer = 0;
-  playing = true;
-  holdScore = 0;
-});
+var hide = (id) => {
+    document.getElementById(id).style.display = "none";
+}
+
+var text = (id, text) => {
+    document.getElementById(id).innerHTML = text;
+}
+
+
+
+show("gameOver");
+text("gameOver", "<p>Please click start game to play</p>");
+text("startreset", "Start Game");
